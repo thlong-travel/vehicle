@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Vehicle Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai",
+          "firebase/app": "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js",
+          "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"
+        }
+      }
+    </script>
+</head>
+<body class="bg-light pb-5">
+<div class="container mt-4" style="max-width: 600px;">
+    <h2 class="text-center mb-4 text-primary">⛽ Quản Lý Chi Phí Xe</h2>
+    
+    <div class="card shadow-sm p-4 mb-4">
+        <h5 class="card-title border-bottom pb-2 mb-3">Thêm giao dịch mới</h5>
+        
+        <div class="row">
+            <div class="col-6 mb-3">
+                <label class="form-label">Chọn xe</label>
+                <select id="vehicleId" class="form-select">
+                    <option value="WaveS">WaveS</option>
+                    <option value="Spark2018">Spark 2018</option>
+                </select>
+            </div>
+            <div class="col-6 mb-3">
+                <label class="form-label">Loại chi phí</label>
+                <select id="expenseType" class="form-select">
+                    <option value="Xăng">Đổ Xăng</option>
+                    <option value="Nhớt máy">Thay Nhớt</option>
+                    <option value="Sửa chữa">Sửa chữa</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Số tiền (VNĐ)</label>
+            <input type="number" id="amount" class="form-control" placeholder="Ví dụ: 50000">
+        </div>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="isFull">
+            <label class="form-check-label text-success fw-bold">Đổ đầy bình (Bắt buộc để tính hao xăng)</label>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Chụp/Chọn ảnh Công-tơ-mét</label>
+            <input type="file" id="odometerImage" class="form-control" accept="image/*" capture="environment">
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Số Odometer (Km)</label>
+            <div class="input-group">
+                <input type="number" id="odometerValue" class="form-control" placeholder="AI đọc hoặc tự nhập">
+                <button class="btn btn-outline-primary" type="button" id="btnReadImage">📸 AI Đọc Ảnh</button>
+            </div>
+            <div id="aiStatus" class="form-text text-primary mt-1 fw-bold"></div>
+        </div>
+
+        <button id="btnSave" class="btn btn-success w-100 py-2 fs-5">💾 Lưu Dữ Liệu</button>
+    </div>
+
+    <div class="card shadow-sm p-4">
+        <h5 class="card-title border-bottom pb-2 mb-3">Biểu đồ "Hao ví" (VNĐ / Km)</h5>
+        <canvas id="expenseChart" width="400" height="250"></canvas>
+    </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
