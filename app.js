@@ -186,7 +186,7 @@ document.getElementById('btnSave').addEventListener('click', async () => {
 // ==========================================
 async function loadChart(vehicleId) {
     const expensesRef = collection(db, "expenses");
-    // Query đơn giản để tránh lỗi Index phức tạp
+    // Chỉ dùng query đơn giản nhất để không bao giờ sợ lỗi Index
     const q = query(
         expensesRef,
         where("vehicle_id", "==", vehicleId),
@@ -197,10 +197,11 @@ async function loadChart(vehicleId) {
     try {
         const snapshot = await getDocs(q);
         let chartData = [];
+        
         snapshot.forEach(doc => {
             const data = doc.data();
-            // Chỉ đưa vào biểu đồ nếu là số dương (bỏ qua mốc 0 đầu tiên)
-            if(data.created_at && data.km_per_liter > 0) {
+            // Chỉ đưa vào biểu đồ những bản ghi đã tính được hiệu suất (km_per_liter > 0)
+            if (data.created_at && data.km_per_liter > 0) {
                 chartData.push({
                     date: data.created_at.toDate().toLocaleDateString('vi-VN'),
                     kmpl: data.km_per_liter
@@ -213,7 +214,7 @@ async function loadChart(vehicleId) {
 
         renderChart(labels, dataPoints, vehicleId);
     } catch (e) {
-        console.error("Lỗi tải biểu đồ:", e);
+        console.error("Lỗi khi tải biểu đồ:", e);
     }
 }
 
