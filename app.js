@@ -186,38 +186,34 @@ document.getElementById('btnSave').addEventListener('click', async () => {
 // ==========================================
 async function loadChart(vehicleId) {
     const expensesRef = collection(db, "expenses");
+    // Query đơn giản để tránh lỗi Index phức tạp
     const q = query(
         expensesRef,
         where("vehicle_id", "==", vehicleId),
         where("type", "==", "Xăng"),
-        where("km_per_liter", ">", 0),
-        orderBy("km_per_liter"), 
         orderBy("created_at", "asc") 
     );
 
     try {
         const snapshot = await getDocs(q);
-        
         let chartData = [];
         snapshot.forEach(doc => {
             const data = doc.data();
-            if(data.created_at) {
+            // Chỉ đưa vào biểu đồ nếu là số dương (bỏ qua mốc 0 đầu tiên)
+            if(data.created_at && data.km_per_liter > 0) {
                 chartData.push({
                     date: data.created_at.toDate().toLocaleDateString('vi-VN'),
-                    kmpl: data.km_per_liter,
-                    timestamp: data.created_at.toMillis()
+                    kmpl: data.km_per_liter
                 });
             }
         });
-        
-        chartData.sort((a, b) => a.timestamp - b.timestamp);
 
         const labels = chartData.map(item => item.date);
         const dataPoints = chartData.map(item => item.kmpl.toFixed(2));
 
         renderChart(labels, dataPoints, vehicleId);
     } catch (e) {
-        console.log("Biểu đồ đang chờ dữ liệu hợp lệ hoặc chờ Index từ Firebase...");
+        console.error("Lỗi tải biểu đồ:", e);
     }
 }
 
